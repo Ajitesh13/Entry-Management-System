@@ -129,7 +129,7 @@
                             </div>
                         </li> -->
                         <div class="submit_btn">
-                            <input type="submit" value="Check In" name="submit">
+                            <input type="submit" value="Submit" name="submit">
                         </div>
                 </form>
             </div>
