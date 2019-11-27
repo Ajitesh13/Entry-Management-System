@@ -1,25 +1,26 @@
 <?php 
     
+    session_start();
+
+    // require ('connect.php');
+    $servername = "localhost";
+    $username = "root";
+    $password = "password";
+    $dbname = "entry-management-system";
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    } 
+
+    echo "Connected successfully";
+
     if(isset($_POST["submit"])){
-        session_start();
-        // require ('connect.php');
-        $servername = "localhost";
-        $username = "root";
-        $password = "password";
-        $dbname = "entry-management-system";
 
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        } 
-
-        echo "Connected successfully";
-
-        
-
+    
         function val($data){
             $data = trim($data);
             $data = stripslashes($data);
@@ -29,31 +30,55 @@
         
         
             
-            $_SESSION["firstname"] = $_POST["firstname"];
-            $fname = val($_SESSION["firstname"]);
-            
-            $_SESSION["lastname"] = $_POST["lastname"];
-            $lname = val($_SESSION["lastname"]);
-            
-            $_SESSION["email"] = $_POST["email"];
-            $email = val($_SESSION["email"]);
-            
-            $_SESSION["mobile_number"] = $_POST["mobile_number"];
-            $phone = val($_SESSION["mobile_number"]);
+        $_SESSION["firstname"] = $_POST["firstname"];
+        $fname = val($_SESSION["firstname"]);
+        
+        $_SESSION["lastname"] = $_POST["lastname"];
+        $lname = val($_SESSION["lastname"]);
+        
+        $_SESSION["email"] = $_POST["email"];
+        $email = val($_SESSION["email"]);
+        
+        $_SESSION["mobile_number"] = $_POST["mobile_number"];
+        $phone = val($_SESSION["mobile_number"]);
 
-            // $sql = "INSERT INTO visitor (firstname, lastname, email, phone) 
-            //         VALUES ('$fname', '$lname', '$email', '$phone')";
+        // $sql = "INSERT INTO visitor (firstname, lastname, email, phone) 
+        //         VALUES ('$fname', '$lname', '$email', '$phone')";
 
-            $stmt = $conn->prepare("INSERT INTO visitor (firstname, lastname, email, phone) VALUES (?, ?, ?, ?)"); //create prepare statement
+        $stmt = $conn->prepare("INSERT INTO visitor (firstname, lastname, email, phone) VALUES (?, ?, ?, ?)"); //create prepare statement
+        $stmt->bind_param("ssss", $fname, $lname, $email, $phone);  //bind prepare statement
+        $stmt->execute();
 
-            $stmt->bind_param("ssss", $fname, $lname, $email, $phone);  //bind prepare statement
+        $sql = "SELECT email, phone FROM host";
+        // mysql_select_db('test_db');
+        $result = $conn->query($sql);   
 
-            $stmt->execute();
+        if(! $result ) {
+            die('Could not get data: ' . mysql_error());
+        }
+        while($row = $result->fetch_assoc()) {
+
+            $hostemail = $row['email']; //get host mail id
+            $hostphone = $row['phone']; // get host phone 
+        }
+        
+
+        $sql1 = "SELECT checkintime FROM visitor WHERE email='$email'";
+        $result = $conn->query($sql1);
+        while($row = $result->fetch_assoc()){
+            $checkintime = $row['checkintime'];
+        }
+
+        $subject = "Visitor CheckIn";
+        $msg_to_host = "Name: $fname $lname Email: $email Phone: $phone Check In Time: $checkintime";
+        mail($hostemail,$subject,$msg_to_host); // mail to the host about the visitor
+        // $msg = " A new Visitor";
+        // sms($hostphone, $msg);
+        //sms can also be sent using api
         
     }
     $conn->close();
     session_destroy();
-    
 
 ?>
 

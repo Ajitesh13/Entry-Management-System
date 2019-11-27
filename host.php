@@ -1,6 +1,5 @@
 <?php 
     
-        // require ('connect.php');
         $servername = "localhost";
         $username = "root";
         $password = "password";
