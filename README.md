@@ -16,7 +16,7 @@ SMS API is not enabled for now, as the WebApp is hosted locally. But can easily 
 
 ## Making Connection With the Data Base 
 
-This is a sample connection setup for a database named **'entry-management-system'** running on the **localhost** server and username and password of phpmyadmin is **'root'** and **'password'** respectively.
+This is a sample connection setup for a database named **'entry-management-system'** running on the **localhost** server and let the username and password of phpmyadmin is **'root'** and **'password'** respectively.
 
 ```php
 $servername = "localhost";
